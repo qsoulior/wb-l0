@@ -1,0 +1,4 @@
+CREATE TABLE IF NOT EXISTS app.order (
+    id VARCHAR(64) PRIMARY KEY,
+    data JSONB
+);

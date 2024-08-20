@@ -1,9 +1,14 @@
 package repo
 
-import "github.com/qsoulior/wb-l0/internal/entity"
+import (
+	"context"
+
+	"github.com/qsoulior/wb-l0/internal/entity"
+)
 
 type Repo interface {
-	Get() ([]entity.Order, error)
-	GetByID(orderID string) (*entity.Order, error)
-	Create(order entity.Order) (*entity.Order, error)
+	Get(ctx context.Context) ([]entity.Order, error)
+	GetByID(ctx context.Context, orderID string) (*entity.Order, error)
+	Create(ctx context.Context, order entity.Order) (*entity.Order, error)
+	CreateMany(ctx context.Context, orders []entity.Order) error
 }
