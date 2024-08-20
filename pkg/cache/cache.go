@@ -71,6 +71,16 @@ func (c *Cache[T]) Get(key string) (T, bool) {
 	return item.Value, true
 }
 
+func (c *Cache[T]) Values() []T {
+	values := make([]T, 0)
+	for _, item := range c.items {
+		if item.Expired() {
+			values = append(values, item.Value)
+		}
+	}
+	return values
+}
+
 func (c *Cache[T]) Delete(key string) {
 	c.mu.Lock()
 	delete(c.items, key)
