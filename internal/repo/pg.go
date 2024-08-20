@@ -8,15 +8,15 @@ import (
 	"github.com/qsoulior/wb-l0/pkg/postgres"
 )
 
-type repoPG struct {
+type PG struct {
 	*postgres.Postgres
 }
 
-func NewRepoPG(pg *postgres.Postgres) Repo {
-	return &repoPG{pg}
+func NewPG(pg *postgres.Postgres) Repo {
+	return &PG{pg}
 }
 
-func (r *repoPG) Get(ctx context.Context) ([]entity.Order, error) {
+func (r *PG) Get(ctx context.Context) ([]entity.Order, error) {
 	const query = "SELECT * FROM order"
 	rows, err := r.Pool.Query(ctx, query)
 	if err != nil {
@@ -26,7 +26,7 @@ func (r *repoPG) Get(ctx context.Context) ([]entity.Order, error) {
 	return pgx.CollectRows(rows, pgx.RowToStructByPos[entity.Order])
 }
 
-func (r *repoPG) GetByID(ctx context.Context, orderID string) (*entity.Order, error) {
+func (r *PG) GetByID(ctx context.Context, orderID string) (*entity.Order, error) {
 	const query = "SELECT * FROM order WHERE id = $1"
 	rows, err := r.Pool.Query(ctx, query)
 	if err != nil {
@@ -36,7 +36,7 @@ func (r *repoPG) GetByID(ctx context.Context, orderID string) (*entity.Order, er
 	return pgx.CollectExactlyOneRow(rows, pgx.RowToAddrOfStructByPos[entity.Order])
 }
 
-func (r *repoPG) Create(ctx context.Context, order entity.Order) (*entity.Order, error) {
+func (r *PG) Create(ctx context.Context, order entity.Order) (*entity.Order, error) {
 	const query = "INSERT INTO order (id, data) VALUES ($1, $2) RETURNING *"
 	rows, err := r.Pool.Query(ctx, query, order.OrderUID, order)
 	if err != nil {
@@ -46,7 +46,7 @@ func (r *repoPG) Create(ctx context.Context, order entity.Order) (*entity.Order,
 	return pgx.CollectExactlyOneRow(rows, pgx.RowToAddrOfStructByPos[entity.Order])
 }
 
-func (r *repoPG) CreateMany(ctx context.Context, orders []entity.Order) error {
+func (r *PG) CreateMany(ctx context.Context, orders []entity.Order) error {
 	n := len(orders)
 	if n == 0 {
 		return nil
