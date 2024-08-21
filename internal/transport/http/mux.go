@@ -1,13 +1,13 @@
 package http
 
 import (
-	"log"
+	"log/slog"
 	"net/http"
 
 	"github.com/qsoulior/wb-l0/internal/service"
 )
 
-func NewMux(s service.Service, logger *log.Logger) http.Handler {
+func NewMux(s service.Service, logger *slog.Logger) http.Handler {
 	mux := http.NewServeMux()
 	mux.Handle("/", &handler{s, logger})
 	return mux

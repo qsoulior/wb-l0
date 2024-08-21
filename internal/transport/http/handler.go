@@ -3,7 +3,7 @@ package http
 import (
 	"encoding/json"
 	"errors"
-	"log"
+	"log/slog"
 	"net/http"
 
 	"github.com/qsoulior/wb-l0/internal/service"
@@ -11,7 +11,7 @@ import (
 
 type handler struct {
 	service service.Service
-	logger  *log.Logger
+	logger  *slog.Logger
 }
 
 func (h *handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
@@ -27,7 +27,7 @@ func (h *handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	} else if err != nil {
 		ErrorJSON(w, "internal server error", http.StatusInternalServerError)
-		h.logger.Printf("h.service.Get: %s", err)
+		h.logger.Error("h.service.Get", "err", err)
 		return
 	}
 
