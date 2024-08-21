@@ -1,0 +1,15 @@
+{
+    "postgres": {
+        "uri": "postgres://devuser:devpassword@localhost:5432/devdb?search_path=app"
+    },
+    "nats": {
+        "url": "nats://localhost:4222",
+        "cluster_id": "app-cluster",
+        "client_id": "app-client",
+        "subscription": "app-sub"
+    },
+    "http": {
+        "host": "localhost",
+        "port": 3000
+    }
+}
