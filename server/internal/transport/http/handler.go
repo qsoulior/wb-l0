@@ -38,9 +38,15 @@ func (h *handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 }
 
 type page struct {
+	logger *slog.Logger
 }
 
 func (p *page) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	t, _ := template.ParseFiles("../internal/transport/template/index.html")
+	t, err := template.ParseFiles("./templates/index.html")
+	if err != nil {
+		p.logger.Error("template.ParseFiles", "err", err)
+		ErrorJSON(w, "internal server error", http.StatusInternalServerError)
+		return
+	}
 	t.Execute(w, nil)
 }

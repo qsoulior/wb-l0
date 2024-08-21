@@ -10,6 +10,6 @@ import (
 func NewMux(s service.Service, logger *slog.Logger) http.Handler {
 	mux := http.NewServeMux()
 	mux.Handle("GET /", &handler{s, logger})
-	mux.Handle("GET /page", new(page))
+	mux.Handle("GET /page", &page{logger})
 	return mux
 }

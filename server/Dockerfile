@@ -10,6 +10,7 @@ RUN CGO_ENABLED=0 GOOS=linux go build -v -o ./main ./cmd
 
 FROM alpine:3.20
 WORKDIR /app
+COPY --from=build /build/templates/ ./templates
 COPY --from=build /build/main ./
 EXPOSE 80
 ENTRYPOINT ["./main"]
