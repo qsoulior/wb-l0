@@ -2,6 +2,7 @@ package repo
 
 import (
 	"context"
+	"errors"
 
 	"github.com/jackc/pgx/v5"
 	"github.com/qsoulior/wb-l0/internal/entity"
@@ -33,7 +34,17 @@ func (r *PG) GetByID(ctx context.Context, orderID string) (*entity.Order, error)
 		return nil, err
 	}
 
-	return pgx.CollectExactlyOneRow(rows, pgx.RowToAddrOfStructByPos[entity.Order])
+	order, err := pgx.CollectExactlyOneRow(rows, pgx.RowToAddrOfStructByPos[entity.Order])
+	switch {
+	case errors.Is(err, pgx.ErrNoRows):
+		return nil, ErrNoRows
+	case errors.Is(err, pgx.ErrTooManyRows):
+		return nil, ErrTooManyRows
+	case err != nil:
+		return nil, err
+	default:
+		return order, nil
+	}
 }
 
 func (r *PG) Create(ctx context.Context, order entity.Order) (*entity.Order, error) {
