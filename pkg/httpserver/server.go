@@ -19,6 +19,7 @@ func New(handler http.Handler, host string, port string) *Server {
 
 	server := &Server{
 		server: httpServer,
+		errCh:  make(chan error, 1),
 	}
 
 	return server
