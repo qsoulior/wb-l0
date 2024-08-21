@@ -1,17 +1,26 @@
 services:
-  app:
-    build: .
+  server:
+    build: server
     command: [ "-c", "configs/docker.dev.json" ]
     restart: unless-stopped
     ports:
       - 3000:80
     volumes:
-      - ./configs:/app/configs
+      - ./server/configs:/app/configs
     depends_on:
       db:
         condition: service_healthy
       broker:
         condition: service_started
+  
+  publisher:
+    build: publisher
+    command: [ "-c", "configs/docker.dev.json" ]
+    restart: unless-stopped
+    volumes:
+      - ./publisher/configs:/app/configs
+    depends_on:
+      - server
 
   db:
     image: postgres:16.4-alpine3.20
