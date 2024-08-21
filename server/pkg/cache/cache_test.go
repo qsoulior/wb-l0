@@ -103,6 +103,25 @@ func TestCache_Get(t *testing.T) {
 	}
 }
 
+func TestCache_Values(t *testing.T) {
+	tests := []struct {
+		name string
+		c    *Cache[any]
+		want []any
+	}{
+		{"NotEmptyCache", simpleCache(), []any{"value"}},
+		{"EmptyCache", emptyCache(), make([]any, 0)},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := tt.c.Values()
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("Cache.Get() got = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
 func TestCache_Delete(t *testing.T) {
 	type args struct {
 		key string

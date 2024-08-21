@@ -74,7 +74,7 @@ func (c *Cache[T]) Get(key string) (T, bool) {
 func (c *Cache[T]) Values() []T {
 	values := make([]T, 0)
 	for _, item := range c.items {
-		if item.Expired() {
+		if !item.Expired() {
 			values = append(values, item.Value)
 		}
 	}
