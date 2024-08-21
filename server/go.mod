@@ -5,6 +5,7 @@ go 1.23.0
 require (
 	github.com/jackc/pgx/v5 v5.6.0
 	github.com/nats-io/stan.go v0.10.4
+	go.uber.org/mock v0.4.0
 )
 
 require (
