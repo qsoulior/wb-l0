@@ -20,8 +20,19 @@ type service struct {
 
 func New(db, cache repo.Repo) Service { return &service{db, cache} }
 
+// Init moves orders from database to cache.
+func (s *service) Init(ctx context.Context) error {
+	orders, err := s.db.Get(ctx)
+	if err != nil {
+		return err
+	}
+
+	return s.cache.CreateMany(ctx, orders)
+}
+
+// Get returns order by its id from cache.
 func (s *service) Get(ctx context.Context, orderID string) (*entity.Order, error) {
-	order, err := s.db.GetByID(ctx, orderID)
+	order, err := s.cache.GetByID(ctx, orderID)
 	if errors.Is(err, repo.ErrNoRows) || errors.Is(err, repo.ErrTooManyRows) {
 		return nil, ErrNotExist
 	} else if err != nil {
@@ -31,6 +42,7 @@ func (s *service) Get(ctx context.Context, orderID string) (*entity.Order, error
 	return order, nil
 }
 
+// Create creates order in database and cache and returns it.
 func (s *service) Create(ctx context.Context, order entity.Order) (*entity.Order, error) {
 	o, err := s.db.Create(ctx, order)
 	if err != nil {
