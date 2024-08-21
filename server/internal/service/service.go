@@ -9,6 +9,7 @@ import (
 )
 
 type Service interface {
+	Init(ctx context.Context) error
 	Get(ctx context.Context, orderID string) (*entity.Order, error)
 	Create(ctx context.Context, order entity.Order) (*entity.Order, error)
 }

@@ -90,10 +90,10 @@ func main() {
 		interval = time.Duration(cfg.Interval) * time.Second
 	}
 
-	ticker := time.NewTicker(interval)
+	timer := time.NewTimer(0)
 	for count := 0; count < cfg.Count || cfg.Count <= 0; count++ {
 		select {
-		case <-ticker.C:
+		case <-timer.C:
 			order.OrderUID = uuid.New().String()
 			data, err := json.Marshal(order)
 			if err != nil {
@@ -107,9 +107,10 @@ func main() {
 				continue
 			}
 			logger.Info("message sended", "uid", order.OrderUID)
+			timer.Reset(interval)
 		case <-ctx.Done():
 			logger.Info("notify signal accepted")
-			ticker.Stop()
+			timer.Stop()
 			return
 		}
 	}

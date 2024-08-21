@@ -33,6 +33,11 @@ func Run(cfg *Config, logger *slog.Logger) {
 	db := repo.NewPG(pg)
 	cache := repo.NewCache(ctx)
 	service := service.New(db, cache)
+	err = service.Init(ctx)
+	if err != nil {
+		logger.Error("failed to init service", "err", err)
+		return
+	}
 
 	// http server
 	mux := http.NewMux(service, logger)

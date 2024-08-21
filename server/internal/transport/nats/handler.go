@@ -19,6 +19,7 @@ func NewHandler(s service.Service, logger *slog.Logger) *handler { return &handl
 
 func (h *handler) Serve(ctx context.Context) stan.MsgHandler {
 	return func(msg *stan.Msg) {
+
 		var order entity.Order
 		err := json.Unmarshal(msg.Data, &order)
 		if err != nil {
@@ -31,5 +32,7 @@ func (h *handler) Serve(ctx context.Context) stan.MsgHandler {
 			h.logger.Error("h.service.Create", "err", err)
 			return
 		}
+
+		h.logger.Info("message received", "uid", order.OrderUID)
 	}
 }
