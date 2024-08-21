@@ -22,6 +22,7 @@ func main() {
 	cfg, err := app.NewConfig(path)
 	if err != nil {
 		logger.Error("failed to load config", "err", err)
+		return
 	}
 
 	app.Run(cfg, logger)

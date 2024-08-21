@@ -27,6 +27,7 @@ func Run(cfg *Config, logger *slog.Logger) {
 		return
 	}
 	defer pg.Close()
+	logger.Info("database connection established", "uri", cfg.Postgres.URI)
 
 	// repositories and service initialization
 	db := repo.NewPG(pg)
@@ -52,6 +53,7 @@ func Run(cfg *Config, logger *slog.Logger) {
 		logger.Error("failed to establish stan connection", "err", err)
 		return
 	}
+	logger.Info("stan connection established", "url", cfg.NATS.URL)
 	sh := nats.NewHandler(service, logger).Serve(ctx)
 	sub, err := sc.Subscribe(cfg.NATS.Subscription, sh, stan.DurableName("app-durable"))
 	if err != nil {

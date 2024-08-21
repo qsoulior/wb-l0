@@ -5,6 +5,8 @@ services:
     restart: unless-stopped
     ports:
       - 3000:80
+    volumes:
+      - ./configs:/app/configs
     depends_on:
       db:
         condition: service_healthy
