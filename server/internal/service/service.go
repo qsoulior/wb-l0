@@ -45,6 +45,15 @@ func (s *service) Get(ctx context.Context, orderID string) (*entity.Order, error
 
 // Create creates order in database and cache and returns it.
 func (s *service) Create(ctx context.Context, order entity.Order) (*entity.Order, error) {
+	_, err := s.cache.GetByID(ctx, order.OrderUID)
+	if err == nil {
+		return nil, ErrExists
+	}
+
+	if !errors.Is(err, repo.ErrNoRows) {
+		return nil, err
+	}
+
 	o, err := s.db.Create(ctx, order)
 	if err != nil {
 		return nil, err
