@@ -5,6 +5,7 @@ import (
 	"errors"
 	"log/slog"
 	"net/http"
+	"text/template"
 
 	"github.com/qsoulior/wb-l0/internal/service"
 )
@@ -34,4 +35,12 @@ func (h *handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
 	json.NewEncoder(w).Encode(order)
+}
+
+type page struct {
+}
+
+func (p *page) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	t, _ := template.ParseFiles("../internal/transport/template/index.html")
+	t.Execute(w, nil)
 }

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>wb-l0</title>
+    <style>
+      html {
+        font-family: sans-serif;
+      }
+
+      .container {
+        display: flex;
+        flex-direction: column;
+        gap: 1em;
+      }
+
+      .panel {
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+      }
+
+      .card {
+        display: flex;
+        border: 1px solid grey;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="panel">
+        <label for="order_input">Order ID</label>
+        <div>
+          <input type="text" id="order_input" />
+          <button type="button" id="order_btn">Send</button>
+        </div>
+      </div>
+      <div class="card" id="order_card"></div>
+    </div>
+    <script>
+      const btn = document.getElementById("order_btn");
+      const input = document.getElementById("order_input");
+      const card = document.getElementById("order_card");
+      btn.addEventListener("click", async () => {
+        const url = new URL("http://localhost:3000");
+        url.searchParams.set("id", input.value);
+        const resp = await fetch(url);
+        const data = await resp.json();
+        card.textContent = data;
+      });
+    </script>
+  </body>
+</html>
