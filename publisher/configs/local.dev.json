@@ -1,0 +1,8 @@
+{
+  "url": "nats://localhost:4222",
+  "cluster_id": "app-cluster",
+  "client_id": "app-publisher",
+  "subject": "app-sub",
+  "interval": 10,
+  "count": 50
+}

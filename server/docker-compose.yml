@@ -34,3 +34,5 @@ services:
     image: nats-streaming:0.25.6-linux
     restart: unless-stopped
     command: ["-cid", "app-cluster"]
+    ports:
+      - 4222:4222
