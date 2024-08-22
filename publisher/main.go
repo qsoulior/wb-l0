@@ -111,6 +111,13 @@ func main() {
 		case <-ctx.Done():
 			logger.Info("notify signal accepted")
 			timer.Stop()
+
+			err = sc.Close()
+			if err != nil {
+				logger.Error("failed to close stan connection", "err", err)
+			} else {
+				logger.Info("stan connection closed")
+			}
 			return
 		}
 	}

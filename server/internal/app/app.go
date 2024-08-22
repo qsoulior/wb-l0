@@ -26,7 +26,6 @@ func Run(cfg *Config, logger *slog.Logger) {
 		logger.Error("failed to establish database connection", "err", err)
 		return
 	}
-	defer pg.Close()
 	logger.Info("database connection established", "uri", cfg.Postgres.URI)
 
 	// repositories and service initialization
@@ -38,12 +37,7 @@ func Run(cfg *Config, logger *slog.Logger) {
 		logger.Error("failed to init service", "err", err)
 		return
 	}
-
-	// http server
-	mux := http.NewMux(service, logger)
-	server := httpserver.New(mux, cfg.HTTP.Host, cfg.HTTP.Port)
-	server.Start(ctx)
-	logger.Info("http server started", "host", cfg.HTTP.Host, "port", cfg.HTTP.Port)
+	logger.Info("service initialized")
 
 	// nats streaming
 	scErrCh := make(chan error, 1)
@@ -67,6 +61,12 @@ func Run(cfg *Config, logger *slog.Logger) {
 	}
 	logger.Info("stan subscription started")
 
+	// http server
+	mux := http.NewMux(service, logger)
+	server := httpserver.New(mux, cfg.HTTP.Host, cfg.HTTP.Port)
+	server.Start(ctx)
+	logger.Info("http server started", "host", cfg.HTTP.Host, "port", cfg.HTTP.Port)
+
 	// graceful shutdown
 	select {
 	case <-ctx.Done():
@@ -84,16 +84,26 @@ func Run(cfg *Config, logger *slog.Logger) {
 	err = server.Stop(ctx)
 	if err != nil {
 		logger.Error("failed to stop http server", "err", err)
+	} else {
+		logger.Info("http server stopped")
 	}
 
 	// stan shutdown
 	err = sub.Unsubscribe()
 	if err != nil {
 		logger.Error("failed to unsubscribe", "err", err)
+	} else {
+		logger.Info("stan subscription removed")
 	}
 
 	err = sc.Close()
 	if err != nil {
 		logger.Error("failed to close stan connection", "err", err)
+	} else {
+		logger.Info("stan connection closed")
 	}
+
+	// db shutdown
+	pg.Close()
+	logger.Info("db connection closed")
 }
